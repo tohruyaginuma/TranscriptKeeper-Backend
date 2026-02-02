@@ -18,10 +18,15 @@
   },
   "homepage": "https://github.com/tohruyaginuma/TranscriptKeeper-Backend#readme",
   "devDependencies": {
+    "@biomejs/biome": "2.3.13",
     "@types/express": "^5.0.6",
     "@types/node": "^25.1.0",
     "express": "^5.2.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@types/pg": "^8.16.0",
+    "pg": "^8.18.0"
   }
 }
