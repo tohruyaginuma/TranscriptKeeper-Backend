@@ -1,11 +1,21 @@
-import express from 'express'
-const app = express()
-const port = 3000
+import express from "express";
+import { PORT } from "@/lib/config.ts";
+import { setRoute } from "@/route/route.ts";
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const newExpressApp = () => {
+	const app = express();
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+	return app;
+};
+
+const main = () => {
+	const app = newExpressApp();
+
+	setRoute(app);
+
+	app.listen(PORT, () => {
+		console.log(`Example app listening on port ${PORT}`);
+	});
+};
+
+main();
