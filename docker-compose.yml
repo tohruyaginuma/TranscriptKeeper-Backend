@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    volumes:
+      - ./infra/journal/postgres_data:/var/lib/postgresql/data
+      - ./infra/conf/postgresql.conf:/etc/postgresql/postgresql.conf
+    environment:
+      POSTGRES_DB: transcript_keeper_local
+      POSTGRES_USER: transcript_keeper_local
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
