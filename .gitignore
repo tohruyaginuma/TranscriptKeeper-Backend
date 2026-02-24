@@ -31,7 +31,8 @@ go.work.sum
 # .idea/
 # .vscode/
 
-/infra
+infra/
 .DS_Store
 .envrc
 .gocache
+tmp/
