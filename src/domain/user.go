@@ -5,8 +5,10 @@ import (
 )
 
 var (
-	ErrInvalidGoogleID = errors.New("google_id must be 255 or less characters long")
-	ErrInvalidUserID   = errors.New("user_id must be greater than 0")
+	ErrInvalidFirebaseUID   = errors.New("firebase_uid must be 255 or less characters long")
+	ErrInvalidUserID        = errors.New("user_id must be greater than 0")
+	ErrDuplicateFirebaseUID = errors.New("duplicate firebase_uid")
+	ErrUserNotFound         = errors.New("user not found")
 )
 
 type UserID int64
@@ -19,24 +21,24 @@ func NewUserID(id int64) (UserID, error) {
 	return UserID(id), nil
 }
 
-type GoogleID string
+type FirebaseUID string
 
-func NewGoogleID(id string) (GoogleID, error) {
-	if len(id) > 255 {
-		return GoogleID(""), ErrInvalidGoogleID
+func NewFirebaseUID(uid string) (FirebaseUID, error) {
+	if len(uid) == 0 || len(uid) > 255 {
+		return FirebaseUID(""), ErrInvalidFirebaseUID
 	}
 
-	return GoogleID(id), nil
+	return FirebaseUID(uid), nil
 }
 
 type User struct {
-	ID       UserID
-	GoogleID GoogleID
+	ID          UserID
+	FirebaseUID FirebaseUID
 }
 
-func NewUser(id UserID, googleID GoogleID) *User {
+func NewUser(id UserID, firebaseUID FirebaseUID) *User {
 	return &User{
-		ID:       id,
-		GoogleID: googleID,
+		ID:          id,
+		FirebaseUID: firebaseUID,
 	}
 }

@@ -9,10 +9,6 @@ import (
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
 )
 
-var (
-	ErrUserNotFound = errors.New("user not found")
-)
-
 type UserRepository struct {
 	db *sqlx.DB
 }
@@ -21,39 +17,19 @@ func NewUserRepository(db *sqlx.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) Create(ctx context.Context, googleID domain.GoogleID) (userID domain.UserID, err error) {
+func (r *UserRepository) Create(ctx context.Context, firebaseUID domain.FirebaseUID) (userID domain.UserID, err error) {
 	const query = `
-		INSERT INTO users (google_id)
+		INSERT INTO users (firebase_uid)
 		VALUES ($1)
+		ON CONFLICT (firebase_uid) DO NOTHING 
 		RETURNING id
 	;`
 
 	var id int64
-	err = r.db.GetContext(ctx, &id, query, googleID)
-	if err != nil {
-		return 0, err
-	}
-
-	userID, err = domain.NewUserID(id)
-	if err != nil {
-		return 0, err
-	}
-
-	return userID, nil
-}
-
-func (r *UserRepository) FindByGoogleID(ctx context.Context, googleID domain.GoogleID) (userID domain.UserID, err error) {
-	const query = `
-		SELECT id
-		FROM users 
-		WHERE google_id = $1
-	;`
-
-	var id int64
-	err = r.db.GetContext(ctx, &id, query, googleID)
+	err = r.db.GetContext(ctx, &id, query, firebaseUID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return 0, ErrUserNotFound
+			return 0, domain.ErrDuplicateFirebaseUID
 		}
 		return 0, err
 	}
@@ -66,17 +42,26 @@ func (r *UserRepository) FindByGoogleID(ctx context.Context, googleID domain.Goo
 	return userID, nil
 }
 
-func (r *UserRepository) ExistsByGoogleID(ctx context.Context, googleID domain.GoogleID) (exists bool, err error) {
+func (r *UserRepository) FindByFirebaseUID(ctx context.Context, firebaseUID domain.FirebaseUID) (userID domain.UserID, err error) {
 	const query = `
-		SELECT EXISTS (
-			SELECT 1 FROM users WHERE google_id = $1
-		)
+		SELECT id
+		FROM users 
+		WHERE firebase_uid = $1
 	;`
 
-	err = r.db.GetContext(ctx, &exists, query, googleID)
+	var id int64
+	err = r.db.GetContext(ctx, &id, query, firebaseUID)
 	if err != nil {
-		return false, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, domain.ErrUserNotFound
+		}
+		return 0, err
 	}
 
-	return exists, nil
+	userID, err = domain.NewUserID(id)
+	if err != nil {
+		return 0, err
+	}
+
+	return userID, nil
 }

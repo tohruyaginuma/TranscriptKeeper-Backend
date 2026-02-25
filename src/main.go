@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/registry"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/repository"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/route"
@@ -13,7 +14,7 @@ import (
 func main() {
 	config.SetLogger()
 
-	e := config.SetEcho()
+	e := lib.SetEcho()
 
 	cfg := config.Load()
 	ctx := context.Background()

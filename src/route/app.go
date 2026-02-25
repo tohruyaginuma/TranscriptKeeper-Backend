@@ -4,17 +4,20 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/middleware"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/registry"
 )
 
 func SetRoute(e *echo.Echo, r *registry.Registry) {
-	const version = "v1"
-
 	e.GET("/", func(ctx echo.Context) error {
 		return ctx.JSON(http.StatusOK, map[string]any{"result": "OK"})
 	})
 
-	userGroup := e.Group(version + "/users")
+	firebaseAuthMiddleware := middleware.NewFirebaseAuthMiddleware(r.Firebase)
 
-	
+	v1Group := e.Group(config.Version)
+	v1Group.Use(firebaseAuthMiddleware.Handle)
+	v1Group.POST("/auth", r.UserHandler.Authenticate)
+	// noteGroup := v1Group.Group("/notes")
 }

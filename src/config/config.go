@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
 )
 
 type Config struct {
@@ -14,13 +16,20 @@ type Config struct {
 }
 
 func Load() *Config {
+	fmt.Println(lib.GetEnv("DB_HOST", "localhost"))
+	fmt.Println(lib.GetEnv("DB_PORT", "5432"))
+	fmt.Println(lib.GetEnv("DB_USER", "test_local"))
+	fmt.Println(lib.GetEnv("DB_PASSWORD", "password"))
+	fmt.Println(lib.GetEnv("DB_NAME", "test_local"))
+	fmt.Println(lib.GetEnv("DB_SSL_MODE", "disable"))
+
 	return &Config{
-		DBHost:    "localhost",
-		DBPort:    "5432",
-		DBUser:    "test_local",
-		DBPass:    "password",
-		DBName:    "test_local",
-		DBSSLMode: "disable",
+		DBHost:    lib.GetEnv("DB_HOST", "localhost"),
+		DBPort:    lib.GetEnv("DB_PORT", "5432"),
+		DBUser:    lib.GetEnv("DB_USER", "test_local"),
+		DBPass:    lib.GetEnv("DB_PASSWORD", "password"),
+		DBName:    lib.GetEnv("DB_NAME", "test_local"),
+		DBSSLMode: lib.GetEnv("DB_SSL_MODE", "disable"),
 	}
 }
 
