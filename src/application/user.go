@@ -11,15 +11,15 @@ var (
 	ErrUserNotFound = errors.New("user not found")
 )
 
-type UserUseCase struct {
+type UserUsecase struct {
 	userRepository userRepository
 }
 
-func NewUserUseCase(userRepository userRepository) *UserUseCase {
-	return &UserUseCase{userRepository: userRepository}
+func NewUserUsecase(userRepository userRepository) *UserUsecase {
+	return &UserUsecase{userRepository: userRepository}
 }
 
-func (u *UserUseCase) CreateOrFindByFirebaseUID(ctx context.Context, firebaseUID domain.FirebaseUID) (userID domain.UserID, isCreated bool, err error) {
+func (u *UserUsecase) CreateOrFindByFirebaseUID(ctx context.Context, firebaseUID domain.FirebaseUID) (userID domain.UserID, isCreated bool, err error) {
 	userID, err = u.userRepository.Create(ctx, firebaseUID)
 	if err != nil {
 		if errors.Is(err, domain.ErrDuplicateFirebaseUID) {
@@ -39,4 +39,15 @@ func (u *UserUseCase) CreateOrFindByFirebaseUID(ctx context.Context, firebaseUID
 	}
 
 	return userID, true, nil
+}
+
+func (u *UserUsecase) FindByFirebaseUID(ctx context.Context, firebaseUID domain.FirebaseUID) (user *domain.User, err error) {
+	userID, err := u.userRepository.FindByFirebaseUID(ctx, firebaseUID)
+	if err != nil {
+		return nil, err
+	}
+
+	user = domain.NewUser(userID, firebaseUID)
+
+	return user, nil
 }

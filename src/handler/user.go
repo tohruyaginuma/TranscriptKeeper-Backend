@@ -36,7 +36,6 @@ func (h *UserHandler) Authenticate(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-
 	userID, isCreated, err := h.userUsecase.CreateOrFindByFirebaseUID(ctx, firebaseUID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]any{

@@ -10,6 +10,7 @@ import (
 type Registry struct {
 	Firebase    *repository.Firebase
 	UserHandler *handler.UserHandler
+	UserUsecase *application.UserUsecase
 }
 
 func NewRegistry(db *sqlx.DB) *Registry {
@@ -25,7 +26,7 @@ func NewRegistry(db *sqlx.DB) *Registry {
 	}
 
 	userRepository := repository.NewUserRepository(db)
-	userUseCase := application.NewUserUseCase(userRepository)
+	userUseCase := application.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
 
 	// noteRepository := repository.NewNoteRepository(db)
@@ -39,5 +40,6 @@ func NewRegistry(db *sqlx.DB) *Registry {
 	return &Registry{
 		Firebase:    firebase,
 		UserHandler: userHandler,
+		UserUsecase: userUseCase,
 	}
 }

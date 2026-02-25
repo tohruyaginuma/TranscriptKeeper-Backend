@@ -15,9 +15,14 @@ func SetRoute(e *echo.Echo, r *registry.Registry) {
 	})
 
 	firebaseAuthMiddleware := middleware.NewFirebaseAuthMiddleware(r.Firebase)
+	userIDMiddleware := middleware.NewUserIDMiddleware(r.UserUsecase)
 
 	v1Group := e.Group(config.Version)
+
 	v1Group.Use(firebaseAuthMiddleware.Handle)
 	v1Group.POST("/auth", r.UserHandler.Authenticate)
-	// noteGroup := v1Group.Group("/notes")
+
+	noteGroup := v1Group.Group("/notes")
+	noteGroup.Use(userIDMiddleware.Handle)
+	// noteGroup.POST("", noteHandler.Create)
 }
