@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/middleware"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/registry"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/repository"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/route"
@@ -13,9 +13,6 @@ import (
 
 func main() {
 	config.SetLogger()
-
-	e := lib.SetEcho()
-
 	cfg := config.Load()
 	ctx := context.Background()
 	db, err := repository.NewDB(ctx, cfg)
@@ -25,6 +22,10 @@ func main() {
 	defer db.Conn.Close()
 
 	registry := registry.NewRegistry(db.Conn)
+
+	allowOrigins := []string{config.ClientURLWeb}
+	e := config.SetEcho()
+	e.Use(middleware.CORSMiddleware(allowOrigins))
 	route.SetRoute(e, registry)
 
 	slog.Info("app starting")

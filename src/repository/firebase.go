@@ -5,10 +5,13 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	firebaseAuth "firebase.google.com/go/v4/auth"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
+	"google.golang.org/api/option"
 )
 
 func NewFirebaseApp() (app *firebase.App, err error) {
-	app, err = firebase.NewApp(context.Background(), nil)
+	opt := option.WithCredentialsFile(config.GoogleApplicationCredentials)
+	app, err = firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		return nil, err
 	}

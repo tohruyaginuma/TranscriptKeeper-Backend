@@ -36,3 +36,4 @@ infra/
 .envrc
 .gocache
 tmp/
+.secrets/
