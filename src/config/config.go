@@ -16,13 +16,6 @@ type Config struct {
 }
 
 func Load() *Config {
-	fmt.Println(lib.GetEnv("DB_HOST", "localhost"))
-	fmt.Println(lib.GetEnv("DB_PORT", "5432"))
-	fmt.Println(lib.GetEnv("DB_USER", "test_local"))
-	fmt.Println(lib.GetEnv("DB_PASSWORD", "password"))
-	fmt.Println(lib.GetEnv("DB_NAME", "test_local"))
-	fmt.Println(lib.GetEnv("DB_SSL_MODE", "disable"))
-
 	return &Config{
 		DBHost:    lib.GetEnv("DB_HOST", "localhost"),
 		DBPort:    lib.GetEnv("DB_PORT", "5432"),

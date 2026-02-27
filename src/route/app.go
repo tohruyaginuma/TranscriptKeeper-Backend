@@ -24,5 +24,8 @@ func SetRoute(e *echo.Echo, r *registry.Registry) {
 
 	noteGroup := v1Group.Group("/notes")
 	noteGroup.Use(userIDMiddleware.Handle)
-	// noteGroup.POST("", noteHandler.Create)
+	noteGroup.GET("", r.NoteHandler.ListByUserID)
+	noteGroup.POST("", r.NoteHandler.Create)
+	noteGroup.PUT("/:note_id", r.NoteHandler.Update)
+	noteGroup.DELETE("/:note_id", r.NoteHandler.Delete)
 }

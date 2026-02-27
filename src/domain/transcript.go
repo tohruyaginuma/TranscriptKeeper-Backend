@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"time"
 )
 
 var (
@@ -28,9 +29,11 @@ func NewContent(content string) (Content, error) {
 }
 
 type Transcript struct {
-	ID      TranscriptID
-	Content Content
-	NoteID  NoteID
+	ID        TranscriptID
+	Content   Content
+	NoteID    NoteID
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func NewTranscript(id TranscriptID, content Content, noteID NoteID) *Transcript {

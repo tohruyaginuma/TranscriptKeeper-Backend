@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/handler"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/repository"
 )
 
@@ -11,10 +12,11 @@ type Registry struct {
 	Firebase    *repository.Firebase
 	UserHandler *handler.UserHandler
 	UserUsecase *application.UserUsecase
+	NoteHandler *handler.NoteHandler
 }
 
 func NewRegistry(db *sqlx.DB) *Registry {
-	// validator := config.NewValidator()
+	validator := lib.NewValidator()
 
 	firebaseApp, err := repository.NewFirebaseApp()
 	if err != nil {
@@ -29,17 +31,14 @@ func NewRegistry(db *sqlx.DB) *Registry {
 	userUseCase := application.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
 
-	// noteRepository := repository.NewNoteRepository(db)
-	// noteService := service.NewNoteService(noteRepository)
-	// noteHandler := handler.NewNoteHandler(validator, noteService)
-
-	// transcriptionRepository := repository.NewTranscriptionRepository(db)
-	// transcriptionService := service.NewTranscriptionService(transcriptionRepository, noteRepository)
-	// transcriptionHandler := handler.NewTranscriptionHandler(validator, transcriptionService)
+	noteRepository := repository.NewNoteRepository(db)
+	noteUsecase := application.NewNoteUsecase(noteRepository)
+	noteHandler := handler.NewNoteHandler(noteUsecase, validator)
 
 	return &Registry{
 		Firebase:    firebase,
 		UserHandler: userHandler,
 		UserUsecase: userUseCase,
+		NoteHandler: noteHandler,
 	}
 }

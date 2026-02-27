@@ -3,15 +3,15 @@ package handler
 import (
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
 )
 
 type UserHandler struct {
 	userUsecase userUsecase
-	validator   *validator.Validate
+	validator   *lib.Valid
 }
 
 func NewUserHandler(userUsecase userUsecase) *UserHandler {
@@ -52,7 +52,8 @@ func (h *UserHandler) Authenticate(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
-		"result":  "OK",
-		"user_id": userID,
+		"result":     "OK",
+		"user_id":    userID,
+		"is_created": isCreated,
 	})
 }

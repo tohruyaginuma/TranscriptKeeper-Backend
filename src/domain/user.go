@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"time"
 )
 
 var (
@@ -34,6 +35,8 @@ func NewFirebaseUID(uid string) (FirebaseUID, error) {
 type User struct {
 	ID          UserID
 	FirebaseUID FirebaseUID
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func NewUser(id UserID, firebaseUID FirebaseUID) *User {
