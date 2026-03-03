@@ -3,7 +3,7 @@ package handler
 import (
 	"time"
 
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application"
 )
 
 type noteResponseItem struct {
@@ -16,14 +16,14 @@ type noteResponse struct {
 	Notes []noteResponseItem `json:"notes"`
 }
 
-func newNoteResponse(notes []*domain.Note) *noteResponse {
+func newNoteResponse(notes []*application.NoteListItem) *noteResponse {
 	response := &noteResponse{
 		Notes: make([]noteResponseItem, len(notes)),
 	}
 	for i, note := range notes {
 		response.Notes[i] = noteResponseItem{
-			ID:        int64(note.ID),
-			Title:     string(note.Title),
+			ID:        note.ID,
+			Title:     note.Title,
 			UpdatedAt: note.UpdatedAt,
 		}
 	}

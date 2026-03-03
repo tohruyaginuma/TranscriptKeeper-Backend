@@ -26,6 +26,6 @@ func (s *NoteUsecase) Delete(ctx context.Context, noteID domain.NoteID) (err err
 	return s.noteRepository.Delete(ctx, noteID)
 }
 
-func (s *NoteUsecase) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*domain.Note, err error) {
+func (s *NoteUsecase) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*NoteListItem, err error) {
 	return s.noteRepository.ListByUserID(ctx, userID)
 }
