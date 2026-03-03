@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
 )
 
@@ -39,7 +40,8 @@ func (r *NoteRepository) Create(ctx context.Context, title domain.NoteTitle, use
 func (r *NoteRepository) Update(ctx context.Context, noteID domain.NoteID, title domain.NoteTitle) (err error) {
 	const query = `
 		UPDATE notes
-		SET title = $1
+		SET title = $1,
+			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $2
 	;`
 
@@ -78,7 +80,7 @@ func (r *NoteRepository) Delete(ctx context.Context, noteID domain.NoteID) (err 
 	return nil
 }
 
-func (r *NoteRepository) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*domain.Note, err error) {
+func (r *NoteRepository) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*application.NoteListItem, err error) {
 	const query = `
 		SELECT id, title, updated_at
 		FROM notes
@@ -91,17 +93,13 @@ func (r *NoteRepository) ListByUserID(ctx context.Context, userID domain.UserID)
 		return nil, err
 	}
 
-	for _, model := range models {
-		noteID, err := domain.NewNoteID(model.ID)
-		if err != nil {
-			return nil, err
+	notes = make([]*application.NoteListItem, len(models))
+	for i, model := range models {
+		notes[i] = &application.NoteListItem{
+			ID:        model.ID,
+			Title:     model.Title,
+			UpdatedAt: model.UpdatedAt,
 		}
-		noteTitle, err := domain.NewNoteTitle(model.Title)
-		if err != nil {
-			return nil, err
-		}
-		note := domain.NewNote(noteID, noteTitle, userID)
-		notes = append(notes, note)
 	}
 
 	return notes, nil
