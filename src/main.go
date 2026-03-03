@@ -5,9 +5,9 @@ import (
 	"log/slog"
 
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/db/postgres"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/middleware"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/registry"
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/repository"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/route"
 )
 
@@ -15,7 +15,7 @@ func main() {
 	config.SetLogger()
 	cfg := config.Load()
 	ctx := context.Background()
-	db, err := repository.NewDB(ctx, cfg)
+	db, err := postgres.NewDB(ctx, cfg)
 	if err != nil {
 		panic(err)
 	}

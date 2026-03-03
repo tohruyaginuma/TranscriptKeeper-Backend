@@ -1,8 +1,8 @@
-package repository
+package model
 
 import "time"
 
-type noteModel struct {
+type NoteModel struct {
 	ID        int64     `db:"id"`
 	Title     string    `db:"title"`
 	UpdatedAt time.Time `db:"updated_at"`

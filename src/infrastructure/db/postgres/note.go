@@ -1,11 +1,12 @@
-package repository
+package postgres
 
 import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/note"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/db/model"
 )
 
 type NoteRepository struct {
@@ -80,22 +81,22 @@ func (r *NoteRepository) Delete(ctx context.Context, noteID domain.NoteID) (err 
 	return nil
 }
 
-func (r *NoteRepository) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*application.NoteListItem, err error) {
+func (r *NoteRepository) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*note.NoteListItem, err error) {
 	const query = `
 		SELECT id, title, updated_at
 		FROM notes
 		WHERE user_id = $1
 		ORDER BY updated_at DESC
 	;`
-	var models []noteModel
+	var models []model.NoteModel
 	err = r.db.SelectContext(ctx, &models, query, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	notes = make([]*application.NoteListItem, len(models))
+	notes = make([]*note.NoteListItem, len(models))
 	for i, model := range models {
-		notes[i] = &application.NoteListItem{
+		notes[i] = &note.NoteListItem{
 			ID:        model.ID,
 			Title:     model.Title,
 			UpdatedAt: model.UpdatedAt,

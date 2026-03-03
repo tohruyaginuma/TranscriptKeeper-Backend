@@ -2,37 +2,41 @@ package registry
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/note"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/user"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/handler"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/db/postgres"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/external"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/repository"
 )
 
 type Registry struct {
-	Firebase    *repository.Firebase
+	Firebase *external.Firebase
+
 	UserHandler *handler.UserHandler
-	UserUsecase *application.UserUsecase
 	NoteHandler *handler.NoteHandler
+
+	UserUsecase *user.UserUsecase
 }
 
 func NewRegistry(db *sqlx.DB) *Registry {
 	validator := lib.NewValidator()
 
-	firebaseApp, err := repository.NewFirebaseApp()
+	firebaseApp, err := external.NewFirebaseApp()
 	if err != nil {
 		panic(err)
 	}
-	firebase, err := repository.NewFirebase(firebaseApp)
+	firebase, err := external.NewFirebase(firebaseApp)
 	if err != nil {
 		panic(err)
 	}
 
-	userRepository := repository.NewUserRepository(db)
-	userUseCase := application.NewUserUsecase(userRepository)
+	userRepository := postgres.NewUserRepository(db)
+	userUseCase := user.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
 
-	noteRepository := repository.NewNoteRepository(db)
-	noteUsecase := application.NewNoteUsecase(noteRepository)
+	noteRepository := postgres.NewNoteRepository(db)
+	noteUsecase := note.NewNoteUsecase(noteRepository)
 	noteHandler := handler.NewNoteHandler(noteUsecase, validator)
 
 	return &Registry{

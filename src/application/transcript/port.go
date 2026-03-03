@@ -1,4 +1,4 @@
-package application
+package transcript
 
 type TranscriptRepository interface {
 	// Create(ctx context.Context, transcript *domain.Transcript) (transcript *domain.Transcript, err error)

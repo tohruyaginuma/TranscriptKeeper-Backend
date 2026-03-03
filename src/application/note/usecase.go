@@ -1,4 +1,4 @@
-package application
+package note
 
 import (
 	"context"

@@ -3,7 +3,7 @@ package handler
 import (
 	"time"
 
-	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application"
+	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/note"
 )
 
 type noteResponseItem struct {
@@ -16,7 +16,7 @@ type noteResponse struct {
 	Notes []noteResponseItem `json:"notes"`
 }
 
-func newNoteResponse(notes []*application.NoteListItem) *noteResponse {
+func newNoteResponse(notes []*note.NoteListItem) *noteResponse {
 	response := &noteResponse{
 		Notes: make([]noteResponseItem, len(notes)),
 	}
