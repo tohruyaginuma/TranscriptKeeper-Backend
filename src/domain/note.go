@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+const (
+	MinNoteID          = 1
+	MinNoteTitleLength = 1
+)
+
 type NoteID int64
 
 var (
@@ -14,7 +19,7 @@ var (
 )
 
 func NewNoteID(id int64) (NoteID, error) {
-	if id <= 0 {
+	if id < MinNoteID {
 		return NoteID(0), ErrInvalidNoteID
 	}
 	return NoteID(id), nil
@@ -23,7 +28,7 @@ func NewNoteID(id int64) (NoteID, error) {
 type NoteTitle string
 
 func NewNoteTitle(title string) (NoteTitle, error) {
-	if len(title) == 0 {
+	if len(title) < MinNoteTitleLength {
 		return NoteTitle(""), ErrInvalidNoteTitle
 	}
 	return NoteTitle(title), nil

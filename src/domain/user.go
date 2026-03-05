@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+const (
+	MinUserID            = 1
+	MinFirebaseUIDLength = 1
+	MaxFirebaseUIDLength = 255
+)
+
 var (
 	ErrInvalidFirebaseUID   = errors.New("firebase_uid must be 255 or less characters long")
 	ErrInvalidUserID        = errors.New("user_id must be greater than 0")
@@ -15,7 +21,7 @@ var (
 type UserID int64
 
 func NewUserID(id int64) (UserID, error) {
-	if id <= 0 {
+	if id < MinUserID {
 		return UserID(0), ErrInvalidUserID
 	}
 
@@ -25,7 +31,7 @@ func NewUserID(id int64) (UserID, error) {
 type FirebaseUID string
 
 func NewFirebaseUID(uid string) (FirebaseUID, error) {
-	if len(uid) == 0 || len(uid) > 255 {
+	if len(uid) < MinFirebaseUIDLength || len(uid) > MaxFirebaseUIDLength {
 		return FirebaseUID(""), ErrInvalidFirebaseUID
 	}
 

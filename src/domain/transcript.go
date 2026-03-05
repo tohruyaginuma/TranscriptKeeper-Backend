@@ -4,6 +4,11 @@ import (
 	"errors"
 )
 
+const (
+	MinTranscriptID            = 1
+	MinTranscriptContentLength = 1
+)
+
 var (
 	ErrInvalidTranscriptID = errors.New("transcript_id must be greater than 0")
 	ErrInvalidContent      = errors.New("content must be greater than 0")
@@ -12,7 +17,7 @@ var (
 type TranscriptID int64
 
 func NewTranscriptID(id int64) (TranscriptID, error) {
-	if id <= 0 {
+	if id < MinTranscriptID {
 		return TranscriptID(0), ErrInvalidTranscriptID
 	}
 	return TranscriptID(id), nil
@@ -21,7 +26,7 @@ func NewTranscriptID(id int64) (TranscriptID, error) {
 type Content string
 
 func NewContent(content string) (Content, error) {
-	if len(content) == 0 {
+	if len(content) < MinTranscriptContentLength {
 		return Content(""), ErrInvalidContent
 	}
 	return Content(content), nil
