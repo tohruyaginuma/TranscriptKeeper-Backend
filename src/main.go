@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/db/postgres"
@@ -27,8 +26,6 @@ func main() {
 	e := config.SetEcho()
 	e.Use(middleware.CORSMiddleware(allowOrigins))
 	route.SetRoute(e, registry)
-
-	slog.Info("app starting")
 
 	e.Logger.Fatal(e.Start(":" + config.Port))
 }
