@@ -1,4 +1,4 @@
-package handler
+package note
 
 import (
 	"log/slog"
@@ -23,6 +23,8 @@ func NewNoteHandler(noteUsecase noteUsecase, validator *lib.Valid) *NoteHandler 
 func (h *NoteHandler) Create(c echo.Context) error {
 	userID, ok := c.Get(config.UserIDKey).(domain.UserID)
 	if !ok {
+		slog.Error("NoteHandler.Create", "error", "missing userID")
+
 		return c.JSON(http.StatusUnauthorized, map[string]any{
 			"result":  "NG",
 			"message": "missing userID",
@@ -33,6 +35,8 @@ func (h *NoteHandler) Create(c echo.Context) error {
 
 	var noteRequest noteCreateRequest
 	if err := c.Bind(&noteRequest); err != nil {
+		slog.Error("NoteHandler.Create", "error", "invalid request body", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request body",
@@ -40,6 +44,8 @@ func (h *NoteHandler) Create(c echo.Context) error {
 	}
 
 	if err := h.validator.IsValid(noteRequest); err != nil {
+		slog.Error("NoteHandler.Create", "error", "invalid request", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request",
@@ -48,6 +54,8 @@ func (h *NoteHandler) Create(c echo.Context) error {
 
 	title, err := domain.NewNoteTitle(noteRequest.Title)
 	if err != nil {
+		slog.Error("NoteHandler.Create", "error", "invalid request", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request",
@@ -56,6 +64,8 @@ func (h *NoteHandler) Create(c echo.Context) error {
 	ctx := c.Request().Context()
 	noteID, err := h.noteUsecase.Create(ctx, title, userID)
 	if err != nil {
+		slog.Error("NoteHandler.Create", "error", "failed to create note", "error", err)
+
 		return c.JSON(http.StatusInternalServerError, map[string]any{
 			"result":  "NG",
 			"message": "failed to create note",
@@ -71,6 +81,8 @@ func (h *NoteHandler) Create(c echo.Context) error {
 func (h *NoteHandler) Update(c echo.Context) error {
 	userID, ok := c.Get(config.UserIDKey).(domain.UserID)
 	if !ok {
+		slog.Error("NoteHandler.Update", "error", "missing userID")
+
 		return c.JSON(http.StatusUnauthorized, map[string]any{
 			"result":  "NG",
 			"message": "missing userID",
@@ -81,6 +93,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 
 	var noteRequest noteUpdateRequest
 	if err := c.Bind(&noteRequest); err != nil {
+		slog.Error("NoteHandler.Update", "error", "invalid request body", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request body",
@@ -88,6 +102,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 	}
 
 	if err := h.validator.IsValid(noteRequest); err != nil {
+		slog.Error("NoteHandler.Update", "error", "invalid request", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request",
@@ -96,6 +112,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 
 	title, err := domain.NewNoteTitle(noteRequest.Title)
 	if err != nil {
+		slog.Error("NoteHandler.Update", "error", "invalid request", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid request",
@@ -105,6 +123,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 	noteIDStr := c.Param("note_id")
 	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
 	if err != nil {
+		slog.Error("NoteHandler.Update", "error", "invalid note_id", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid note_id",
@@ -112,6 +132,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 	}
 	noteID, err := domain.NewNoteID(noteIDInt)
 	if err != nil {
+		slog.Error("NoteHandler.Update", "error", "invalid note_id", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid note_id",
@@ -121,6 +143,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 	ctx := c.Request().Context()
 	err = h.noteUsecase.Update(ctx, noteID, title)
 	if err != nil {
+		slog.Error("NoteHandler.Update", "error", "failed to update note", "error", err)
+
 		return c.JSON(http.StatusInternalServerError, map[string]any{
 			"result":  "NG",
 			"message": "failed to update note",
@@ -135,6 +159,8 @@ func (h *NoteHandler) Update(c echo.Context) error {
 func (h *NoteHandler) Delete(c echo.Context) error {
 	userID, ok := c.Get(config.UserIDKey).(domain.UserID)
 	if !ok {
+		slog.Error("NoteHandler.Delete", "error", "missing userID")
+
 		return c.JSON(http.StatusUnauthorized, map[string]any{
 			"result":  "NG",
 			"message": "missing userID",
@@ -146,6 +172,8 @@ func (h *NoteHandler) Delete(c echo.Context) error {
 	noteIDStr := c.Param("note_id")
 	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
 	if err != nil {
+		slog.Error("NoteHandler.Delete", "error", "invalid note_id", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid note_id",
@@ -153,6 +181,8 @@ func (h *NoteHandler) Delete(c echo.Context) error {
 	}
 	noteID, err := domain.NewNoteID(noteIDInt)
 	if err != nil {
+		slog.Error("NoteHandler.Delete", "error", "invalid note_id", "error", err)
+
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
 			"message": "invalid note_id",
@@ -162,6 +192,8 @@ func (h *NoteHandler) Delete(c echo.Context) error {
 	ctx := c.Request().Context()
 	err = h.noteUsecase.Delete(ctx, noteID)
 	if err != nil {
+		slog.Error("NoteHandler.Delete", "error", "failed to delete note", "error", err)
+
 		return c.JSON(http.StatusInternalServerError, map[string]any{
 			"result":  "NG",
 			"message": "failed to delete note",
@@ -176,6 +208,8 @@ func (h *NoteHandler) Delete(c echo.Context) error {
 func (h *NoteHandler) ListByUserID(c echo.Context) error {
 	userID, ok := c.Get(config.UserIDKey).(domain.UserID)
 	if !ok {
+		slog.Error("NoteHandler.ListByUserID", "error", "missing userID")
+
 		return c.JSON(http.StatusUnauthorized, map[string]any{
 			"result":  "NG",
 			"message": "missing userID",
@@ -187,6 +221,8 @@ func (h *NoteHandler) ListByUserID(c echo.Context) error {
 	ctx := c.Request().Context()
 	notes, err := h.noteUsecase.ListByUserID(ctx, userID)
 	if err != nil {
+		slog.Error("NoteHandler.ListByUserID", "error", "failed to list notes", "error", err)
+
 		return c.JSON(http.StatusInternalServerError, map[string]any{
 			"result":  "NG",
 			"message": "failed to list notes",

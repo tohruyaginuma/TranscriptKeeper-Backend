@@ -1,4 +1,4 @@
-package handler
+package transcript
 
 import (
 	"log/slog"

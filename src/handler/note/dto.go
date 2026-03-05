@@ -1,4 +1,4 @@
-package handler
+package note
 
 import (
 	"time"
@@ -6,6 +6,13 @@ import (
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/note"
 )
 
+type noteCreateRequest struct {
+	Title string `json:"title" validate:"required"`
+}
+
+type noteUpdateRequest struct {
+	Title string `json:"title" validate:"required"`
+}
 type noteResponseItem struct {
 	ID        int64     `json:"id"`
 	Title     string    `json:"title"`
