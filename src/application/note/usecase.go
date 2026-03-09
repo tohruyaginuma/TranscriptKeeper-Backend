@@ -29,3 +29,12 @@ func (s *NoteUsecase) Delete(ctx context.Context, noteID domain.NoteID) (err err
 func (s *NoteUsecase) ListByUserID(ctx context.Context, userID domain.UserID) (notes []*NoteListItem, err error) {
 	return s.noteRepository.ListByUserID(ctx, userID)
 }
+
+func (s *NoteUsecase) RetrieveByID(ctx context.Context, noteID domain.NoteID) (noteItem *NoteListItem, err error) {
+	noteItem, err = s.noteRepository.RetrieveByID(ctx, noteID)
+	if err != nil {
+		return nil, err
+	}
+
+	return noteItem, nil
+}

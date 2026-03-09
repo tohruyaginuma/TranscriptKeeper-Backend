@@ -105,3 +105,26 @@ func (r *NoteRepository) ListByUserID(ctx context.Context, userID domain.UserID)
 
 	return notes, nil
 }
+
+func (r *NoteRepository) RetrieveByID(ctx context.Context, id domain.NoteID) (noteItem *note.NoteListItem, err error) {
+	const query = `
+		SELECT id, title, updated_at
+		FROM notes
+		WHERE id = $1
+		LIMIT 1
+	;`
+
+	var model model.NoteModel
+	err = r.db.GetContext(ctx, &model, query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	noteItem = &note.NoteListItem{
+		ID:        model.ID,
+		Title:     model.Title,
+		UpdatedAt: model.UpdatedAt,
+	}
+
+	return noteItem, nil
+}

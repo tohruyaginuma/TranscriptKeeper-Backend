@@ -28,6 +28,7 @@ func SetRoute(e *echo.Echo, r *registry.Registry) {
 	noteGroup.POST("", r.NoteHandler.Create)
 	noteGroup.PUT("/:note_id", r.NoteHandler.Update)
 	noteGroup.DELETE("/:note_id", r.NoteHandler.Delete)
+	noteGroup.GET("/:note_id", r.NoteHandler.RetrieveByID)
 
 	transcriptGroup := noteGroup.Group("/:note_id/transcripts")
 	transcriptGroup.POST("", r.TranscriptHandler.Create)

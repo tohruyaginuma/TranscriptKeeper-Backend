@@ -236,3 +236,53 @@ func (h *NoteHandler) ListByUserID(c echo.Context) error {
 		"notes":  response.Notes,
 	})
 }
+
+func (h *NoteHandler) RetrieveByID(c echo.Context) error {
+	userID, ok := c.Get(config.UserIDKey).(domain.UserID)
+	if !ok {
+		slog.Error("NoteHandler.RetrieveByNoteID", "error", "missing userID")
+
+		return c.JSON(http.StatusUnauthorized, map[string]any{
+			"result":  "NG",
+			"message": "missing userID",
+		})
+	}
+
+	slog.Info("NoteHandler.RetrieveByNoteID", "userID", userID)
+
+	noteIDStr := c.Param("note_id")
+	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
+	if err != nil {
+		slog.Error("NoteHandler.RetrieveByNoteID", "error", "invalid note_id", "error", err)
+
+		return c.JSON(http.StatusBadRequest, map[string]any{
+			"result":  "NG",
+			"message": "invalid note_id",
+		})
+	}
+	noteID, err := domain.NewNoteID(noteIDInt)
+	if err != nil {
+		slog.Error("NoteHandler.RetrieveByNoteID", "error", "invalid note_id", "error", err)
+
+		return c.JSON(http.StatusBadRequest, map[string]any{
+			"result":  "NG",
+			"message": "invalid note_id",
+		})
+	}
+
+	ctx := c.Request().Context()
+	noteItem, err := h.noteUsecase.RetrieveByID(ctx, noteID)
+	if err != nil {
+		slog.Error("NoteHandler.RetrieveByNoteID", "error", "failed to retrieve note", "error", err)
+
+		return c.JSON(http.StatusInternalServerError, map[string]any{
+			"result":  "NG",
+			"message": "failed to retrieve note",
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]any{
+		"result": "OK",
+		"title":  noteItem.Title,
+	})
+}

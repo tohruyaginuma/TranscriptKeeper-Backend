@@ -12,4 +12,5 @@ type noteUsecase interface {
 	Update(ctx context.Context, noteID domain.NoteID, title domain.NoteTitle) (err error)
 	Delete(ctx context.Context, noteID domain.NoteID) (err error)
 	ListByUserID(ctx context.Context, userID domain.UserID) (notes []*note.NoteListItem, err error)
+	RetrieveByID(ctx context.Context, id domain.NoteID) (noteItem *note.NoteListItem, err error)
 }

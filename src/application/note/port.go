@@ -12,6 +12,7 @@ type NoteRepository interface {
 	Update(ctx context.Context, noteID domain.NoteID, title domain.NoteTitle) (err error)
 	Delete(ctx context.Context, noteID domain.NoteID) (err error)
 	ListByUserID(ctx context.Context, userID domain.UserID) (notes []*NoteListItem, err error)
+	RetrieveByID(ctx context.Context, id domain.NoteID) (note *NoteListItem, err error)
 }
 
 type NoteListItem struct {
