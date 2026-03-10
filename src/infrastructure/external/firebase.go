@@ -10,8 +10,7 @@ import (
 )
 
 func NewFirebaseApp() (app *firebase.App, err error) {
-	opt := option.WithCredentialsFile(config.GoogleApplicationCredentials)
-	app, err = firebase.NewApp(context.Background(), nil, opt)
+	app, err = firebase.NewApp(context.Background(), nil, option.WithCredentialsJSON([]byte(config.GoogleApplicationCredentials)))
 	if err != nil {
 		return nil, err
 	}
