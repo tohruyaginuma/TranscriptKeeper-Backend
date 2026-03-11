@@ -54,8 +54,9 @@ func (h *UserHandler) Authenticate(c echo.Context) error {
 
 	if isCreated {
 		return c.JSON(http.StatusCreated, map[string]any{
-			"result":  "OK",
-			"user_id": userID,
+			"result":     "OK",
+			"user_id":    userID,
+			"is_created": isCreated,
 		})
 	}
 
