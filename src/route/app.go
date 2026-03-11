@@ -1,6 +1,7 @@
 package route
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -11,6 +12,7 @@ import (
 
 func SetRoute(e *echo.Echo, r *registry.Registry) {
 	e.GET("/", func(ctx echo.Context) error {
+		slog.Info("GET /")
 		return ctx.JSON(http.StatusOK, map[string]any{"result": "OK"})
 	})
 
