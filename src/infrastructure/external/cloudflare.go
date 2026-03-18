@@ -33,10 +33,8 @@ func (c *CloudflareWorkersAIClient) Transcribe(ctx context.Context, audio io.Rea
 	if err != nil {
 		return WhisperOutput{}, err
 	}
-	context.WithoutCancel(ctx)
-	if err != nil {
-		return WhisperOutput{}, err
-	}
+
+	ctx = context.WithoutCancel(ctx)
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute)
 	defer cancel()
 	audioBase64 := base64.StdEncoding.EncodeToString(b)
