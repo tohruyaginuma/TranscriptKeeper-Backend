@@ -2,11 +2,16 @@ package transcript
 
 import (
 	"context"
+	"errors"
 	"io"
 
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/db/postgres"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/infrastructure/external"
+)
+
+var (
+	ErrTranscriptNotFound = errors.New("transcript not found")
 )
 
 type TranscriptUsecase struct {
@@ -38,6 +43,9 @@ func (s *TranscriptUsecase) Create(ctx context.Context, audio io.Reader, languag
 func (s *TranscriptUsecase) RetrieveByNoteID(ctx context.Context, noteID domain.NoteID) (transcript domain.Transcript, err error) {
 	transcript, err = s.TranscriptRepository.RetrieveByNoteID(ctx, noteID)
 	if err != nil {
+		if errors.Is(err, domain.ErrTranscriptNotFound) {
+			return domain.Transcript{}, ErrTranscriptNotFound
+		}
 		return domain.Transcript{}, err
 	}
 

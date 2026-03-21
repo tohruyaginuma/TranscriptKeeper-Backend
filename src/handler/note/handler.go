@@ -12,12 +12,12 @@ import (
 )
 
 type NoteHandler struct {
-	noteUsecase noteUsecase
+	usecase usecase
 	validator   *lib.Valid
 }
 
-func NewNoteHandler(noteUsecase noteUsecase, validator *lib.Valid) *NoteHandler {
-	return &NoteHandler{noteUsecase: noteUsecase, validator: validator}
+func NewNoteHandler(usecase usecase, validator *lib.Valid) *NoteHandler {
+	return &NoteHandler{usecase: usecase, validator: validator}
 }
 
 func (h *NoteHandler) Create(c echo.Context) error {
@@ -62,7 +62,7 @@ func (h *NoteHandler) Create(c echo.Context) error {
 		})
 	}
 	ctx := c.Request().Context()
-	noteID, err := h.noteUsecase.Create(ctx, title, userID)
+	noteID, err := h.usecase.Create(ctx, title, userID)
 	if err != nil {
 		slog.Error("NoteHandler.Create", "error", "failed to create note", "error", err)
 
@@ -141,7 +141,7 @@ func (h *NoteHandler) Update(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	err = h.noteUsecase.Update(ctx, noteID, title)
+	err = h.usecase.Update(ctx, noteID, title)
 	if err != nil {
 		slog.Error("NoteHandler.Update", "error", "failed to update note", "error", err)
 
@@ -190,7 +190,7 @@ func (h *NoteHandler) Delete(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	err = h.noteUsecase.Delete(ctx, noteID)
+	err = h.usecase.Delete(ctx, noteID)
 	if err != nil {
 		slog.Error("NoteHandler.Delete", "error", "failed to delete note", "error", err)
 
@@ -219,7 +219,7 @@ func (h *NoteHandler) ListByUserID(c echo.Context) error {
 	slog.Info("NoteHandler.ListByUserID", "userID", userID)
 
 	ctx := c.Request().Context()
-	notes, err := h.noteUsecase.ListByUserID(ctx, userID)
+	notes, err := h.usecase.ListByUserID(ctx, userID)
 	if err != nil {
 		slog.Error("NoteHandler.ListByUserID", "error", "failed to list notes", "error", err)
 
@@ -271,7 +271,7 @@ func (h *NoteHandler) RetrieveByID(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	noteItem, err := h.noteUsecase.RetrieveByID(ctx, noteID)
+	noteItem, err := h.usecase.RetrieveByID(ctx, noteID)
 	if err != nil {
 		slog.Error("NoteHandler.RetrieveByNoteID", "error", "failed to retrieve note", "error", err)
 

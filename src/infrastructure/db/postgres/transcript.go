@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
@@ -47,6 +48,9 @@ func (r *TranscriptRepository) RetrieveByNoteID(ctx context.Context, noteID doma
 	var model model.TranscriptModel
 	err = r.db.GetContext(ctx, &model, query, noteID)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return domain.Transcript{}, domain.ErrTranscriptNotFound
+		}
 		return domain.Transcript{}, err
 	}
 

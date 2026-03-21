@@ -12,6 +12,7 @@ const (
 var (
 	ErrInvalidTranscriptID = errors.New("transcript_id must be greater than 0")
 	ErrInvalidContent      = errors.New("content must be greater than 0")
+	ErrTranscriptNotFound  = errors.New("transcript not found")
 )
 
 type TranscriptID int64

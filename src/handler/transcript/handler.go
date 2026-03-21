@@ -1,23 +1,25 @@
 package transcript
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	transcriptUsecase "github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/transcript"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/domain"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/lib"
 )
 
 type TranscriptHandler struct {
-	transcriptUsecase transcriptUsecase
+	usecase usecase
 	validator         *lib.Valid
 }
 
-func NewTranscriptHandler(transcriptUsecase transcriptUsecase, validator *lib.Valid) *TranscriptHandler {
-	return &TranscriptHandler{transcriptUsecase: transcriptUsecase, validator: validator}
+func NewTranscriptHandler(usecase usecase, validator *lib.Valid) *TranscriptHandler {
+	return &TranscriptHandler{usecase: usecase, validator: validator}
 }
 
 func (h *TranscriptHandler) Create(c echo.Context) error {
@@ -132,6 +134,13 @@ func (h *TranscriptHandler) RetrieveByNoteID(c echo.Context) error {
 	transcript, err := h.transcriptUsecase.RetrieveByNoteID(ctx, noteID)
 	if err != nil {
 		slog.Error("TranscriptHandler.RetrieveByNoteID", "error", "failed to retrieve transcript", "error", err)
+
+		if errors.Is(err, transcriptUsecase.ErrTranscriptNotFound) {
+			return c.JSON(http.StatusNotFound, map[string]any{
+				"result":  "NG",
+				"message": "transcript not found",
+			})
+		}
 
 		return c.JSON(http.StatusInternalServerError, map[string]any{
 			"result":  "NG",

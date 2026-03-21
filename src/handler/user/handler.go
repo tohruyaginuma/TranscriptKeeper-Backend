@@ -11,12 +11,12 @@ import (
 )
 
 type UserHandler struct {
-	userUsecase userUsecase
-	validator   *lib.Valid
+	usecase   usecase
+	validator *lib.Valid
 }
 
-func NewUserHandler(userUsecase userUsecase) *UserHandler {
-	return &UserHandler{userUsecase: userUsecase}
+func NewUserHandler(usecase usecase) *UserHandler {
+	return &UserHandler{usecase: usecase}
 }
 
 func (h *UserHandler) Authenticate(c echo.Context) error {
@@ -42,7 +42,7 @@ func (h *UserHandler) Authenticate(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	userID, isCreated, err := h.userUsecase.CreateOrFindByFirebaseUID(ctx, firebaseUID)
+	userID, isCreated, err := h.usecase.CreateOrFindByFirebaseUID(ctx, firebaseUID)
 	if err != nil {
 		slog.Error("UserHandler.Authenticate", "error", "failed to create or find by firebase_uid", "error", err)
 
