@@ -22,7 +22,7 @@ func main() {
 
 	registry := registry.NewRegistry(db.Conn)
 
-	allowOrigins := []string{config.ClientURLWeb}
+	allowOrigins := []string{config.ClientURLWeb, config.ClientURLDesktop}
 	e := config.SetEcho()
 	e.Use(middleware.CORSMiddleware(allowOrigins))
 	route.SetRoute(e, registry)

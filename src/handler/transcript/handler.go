@@ -14,8 +14,8 @@ import (
 )
 
 type TranscriptHandler struct {
-	usecase usecase
-	validator         *lib.Valid
+	usecase   usecase
+	validator *lib.Valid
 }
 
 func NewTranscriptHandler(usecase usecase, validator *lib.Valid) *TranscriptHandler {
@@ -89,7 +89,7 @@ func (h *TranscriptHandler) Create(c echo.Context) error {
 	defer audioFile.Close()
 
 	ctx := c.Request().Context()
-	transcriptResult, err := h.transcriptUsecase.Create(ctx, audioFile, language, noteID)
+	transcriptResult, err := h.usecase.Create(ctx, audioFile, language, noteID)
 	if err != nil {
 		slog.Error("TranscriptHandler.Create", "error", "failed to create transcript", "error", err)
 
@@ -131,7 +131,7 @@ func (h *TranscriptHandler) RetrieveByNoteID(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	transcript, err := h.transcriptUsecase.RetrieveByNoteID(ctx, noteID)
+	transcript, err := h.usecase.RetrieveByNoteID(ctx, noteID)
 	if err != nil {
 		slog.Error("TranscriptHandler.RetrieveByNoteID", "error", "failed to retrieve transcript", "error", err)
 
