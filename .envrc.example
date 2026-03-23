@@ -1,5 +1,11 @@
 DB_HOST=localhost
+DB_PORT=5432
 DB_USER=transcript_keeper_local
-DB_DATABASE=transcript_keeper_local
 DB_PASSWORD=password
-APP_PORT=3000
+DB_NAME=transcript_keeper_local
+DB_SSL_MODE=disable
+CLIENT_URL_WEB=http://localhost:5173
+CLIENT_URL_DESKTOP=http://localhost:5174
+GOOGLE_APPLICATION_CREDENTIALS='{"type":"service_account","project_id":"your-project-id"}'
+CF_API_TOKEN=your_cloudflare_api_token
+CF_ACCOUNT_ID=your_cloudflare_account_id
