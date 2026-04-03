@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"strconv"
 	"time"
 )
 
@@ -23,6 +24,14 @@ func NewNoteID(id int64) (NoteID, error) {
 		return NoteID(0), ErrInvalidNoteID
 	}
 	return NoteID(id), nil
+}
+
+func ParseNoteID(s string) (NoteID, error) {
+	id, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return NoteID(0), ErrInvalidNoteID
+	}
+	return NewNoteID(id)
 }
 
 type NoteTitle string

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	transcriptUsecase "github.com/tohruyaginuma/TranscriptKeeper-Backend/src/application/transcript"
@@ -33,22 +32,9 @@ func (h *TranscriptHandler) Create(c echo.Context) error {
 		})
 	}
 
-	noteIDStr := c.Param("note_id")
-	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
+	noteID, err := domain.ParseNoteID(c.Param("note_id"))
 	if err != nil {
-		slog.Error("TranscriptHandler.Create", "error", "invalid note_id", "noteIDStr", noteIDStr)
-
-		return c.JSON(http.StatusBadRequest, map[string]any{
-			"result":  "NG",
-			"message": "invalid note_id",
-		})
-	}
-
-	slog.Info("TranscriptHandler.Create", "noteID", noteIDInt)
-
-	noteID, err := domain.NewNoteID(noteIDInt)
-	if err != nil {
-		slog.Error("TranscriptHandler.Create", "error", "invalid note_id", "noteIDInt", noteIDInt)
+		slog.Error("TranscriptHandler.Create", "error", "invalid note_id", "error", err)
 
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
@@ -107,22 +93,9 @@ func (h *TranscriptHandler) Create(c echo.Context) error {
 }
 
 func (h *TranscriptHandler) RetrieveByNoteID(c echo.Context) error {
-	noteIDStr := c.Param("note_id")
-	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
+	noteID, err := domain.ParseNoteID(c.Param("note_id"))
 	if err != nil {
-		slog.Error("TranscriptHandler.RetrieveByNoteID", "error", "invalid note_id", "noteIDStr", noteIDStr)
-
-		return c.JSON(http.StatusBadRequest, map[string]any{
-			"result":  "NG",
-			"message": "invalid note_id",
-		})
-	}
-
-	slog.Info("TranscriptHandler.RetrieveByNoteID", "noteID", noteIDInt)
-
-	noteID, err := domain.NewNoteID(noteIDInt)
-	if err != nil {
-		slog.Error("TranscriptHandler.RetrieveByNoteID", "error", "invalid note_id", "noteIDInt", noteIDInt)
+		slog.Error("TranscriptHandler.RetrieveByNoteID", "error", "invalid note_id", "error", err)
 
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"result":  "NG",
