@@ -53,6 +53,64 @@ func TestNewNoteID(t *testing.T) {
 	}
 }
 
+func TestParseNoteID(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		input   string
+		want    domain.NoteID
+		wantErr error
+	}{
+		{
+			name:    "valid id",
+			input:   "1",
+			want:    domain.NoteID(1),
+			wantErr: nil,
+		},
+		{
+			name:    "zero id",
+			input:   "0",
+			want:    domain.NoteID(0),
+			wantErr: domain.ErrInvalidNoteID,
+		},
+		{
+			name:    "negative id",
+			input:   "-1",
+			want:    domain.NoteID(0),
+			wantErr: domain.ErrInvalidNoteID,
+		},
+		{
+			name:    "non-numeric string",
+			input:   "abc",
+			want:    domain.NoteID(0),
+			wantErr: domain.ErrInvalidNoteID,
+		},
+		{
+			name:    "empty string",
+			input:   "",
+			want:    domain.NoteID(0),
+			wantErr: domain.ErrInvalidNoteID,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got, err := domain.ParseNoteID(tt.input)
+			if !errors.Is(err, tt.wantErr) {
+				t.Fatalf("ParseNoteID() error = %v, wantErr = %v", err, tt.wantErr)
+			}
+
+			if got != tt.want {
+				t.Fatalf("ParseNoteID() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestNewNoteTitle(t *testing.T) {
 	t.Parallel()
 
