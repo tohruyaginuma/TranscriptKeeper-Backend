@@ -3,7 +3,6 @@ package note
 import (
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/tohruyaginuma/TranscriptKeeper-Backend/src/config"
@@ -120,17 +119,7 @@ func (h *NoteHandler) Update(c echo.Context) error {
 		})
 	}
 
-	noteIDStr := c.Param("note_id")
-	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
-	if err != nil {
-		slog.Error("NoteHandler.Update", "error", "invalid note_id", "error", err)
-
-		return c.JSON(http.StatusBadRequest, map[string]any{
-			"result":  "NG",
-			"message": "invalid note_id",
-		})
-	}
-	noteID, err := domain.NewNoteID(noteIDInt)
+	noteID, err := domain.ParseNoteID(c.Param("note_id"))
 	if err != nil {
 		slog.Error("NoteHandler.Update", "error", "invalid note_id", "error", err)
 
@@ -169,17 +158,7 @@ func (h *NoteHandler) Delete(c echo.Context) error {
 
 	slog.Info("NoteHandler.Delete", "userID", userID)
 
-	noteIDStr := c.Param("note_id")
-	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
-	if err != nil {
-		slog.Error("NoteHandler.Delete", "error", "invalid note_id", "error", err)
-
-		return c.JSON(http.StatusBadRequest, map[string]any{
-			"result":  "NG",
-			"message": "invalid note_id",
-		})
-	}
-	noteID, err := domain.NewNoteID(noteIDInt)
+	noteID, err := domain.ParseNoteID(c.Param("note_id"))
 	if err != nil {
 		slog.Error("NoteHandler.Delete", "error", "invalid note_id", "error", err)
 
@@ -250,17 +229,7 @@ func (h *NoteHandler) RetrieveByID(c echo.Context) error {
 
 	slog.Info("NoteHandler.RetrieveByNoteID", "userID", userID)
 
-	noteIDStr := c.Param("note_id")
-	noteIDInt, err := strconv.ParseInt(noteIDStr, 10, 64)
-	if err != nil {
-		slog.Error("NoteHandler.RetrieveByNoteID", "error", "invalid note_id", "error", err)
-
-		return c.JSON(http.StatusBadRequest, map[string]any{
-			"result":  "NG",
-			"message": "invalid note_id",
-		})
-	}
-	noteID, err := domain.NewNoteID(noteIDInt)
+	noteID, err := domain.ParseNoteID(c.Param("note_id"))
 	if err != nil {
 		slog.Error("NoteHandler.RetrieveByNoteID", "error", "invalid note_id", "error", err)
 
